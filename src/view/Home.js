@@ -9,10 +9,12 @@ class Home extends React.Component {
             unidades : [],
             content : null,
         }
-
-        // this.getContent = this.getContent.bind(this);
     }
 
+    /**
+    * Se obtienen los datos del API al montar el componente
+    * @return mixed
+    */
     componentDidMount() {
         MakeRequest({
             method: 'get',
@@ -24,6 +26,10 @@ class Home extends React.Component {
         });
     }
 
+    /**
+    * se despliegan los detalles de las categorias y subcategorias
+    * @return mixed
+    */
     getContent(data) {
         MakeRequest({
             method: 'get',

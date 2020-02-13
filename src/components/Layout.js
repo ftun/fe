@@ -19,13 +19,6 @@ class Layout extends React.Component {
                     {this.props.children}
                 </div>
             </main>
-            <footer className="page-footer">
-                <div className="footer-copyright">
-                    <div className="container">
-                        © {new Date().getFullYear()} Copyright App
-                    </div>
-                </div>
-            </footer>
         </Fragment>;
     }
 }
