@@ -5,6 +5,7 @@ import NotFound from './components/NotFound';
 import Home from './view/Home';
 import Admin from './view/Admin';
 import AdminCategory from './view/AdminCategory';
+// import Login from './components/Login';
 
 const AppRoutes = (props) =>
     <Switch>
@@ -12,6 +13,7 @@ const AppRoutes = (props) =>
         <Route exact path="/home" component={Home} />
         <Route exact path="/admin" component={Admin} />
         <Route exact path="/category" component={AdminCategory} />
+        
         <Route component={NotFound} />
     </Switch>
 ;
