@@ -1,11 +1,11 @@
 /**
-* @author Felipe Tun Cauich <ftun@palaceresorts.com>
+* @author Felipe Tun Cauich <felipe.tun.cauich@gmail.com>
 * Clases que contienen funcionalidades genericas de la aplicacion
 */
 class Util {
 
     /**
-    * @author Felipe Tun <ftun@palaceresorts.com>
+    * @author Felipe Tun <felipe.tun.cauich@gmail.com>
     * Funcion para obtener los valores de los elementos de un formulario
     * @param Object form. instancia del formualrio a enviar | !importante: el formulario debe contener el dataset 'data-method-api' definido
 	* en caso contraio devolvera los atributos de usuario_creacion y usuario_ultima_modificacion con el username del usuario en sesion
@@ -55,7 +55,7 @@ class Util {
 	}
 
     /**
-    * @author Felipe Tun <ftun@palaceresorts.com>
+    * @author Felipe Tun <felipe.tun.cauich@gmail.com>
     * Funcion para obtener la fecha actual o convertir una fecha a formato ISO
     * @param string
     * @param bool
@@ -86,7 +86,7 @@ class Util {
     }
 
     /**
-    * @author Felipe Tun <ftun@palaceresorts.com>
+    * @author Felipe Tun <felipe.tun.cauich@gmail.com>
     * Funcion para tratar los nombres de los atributos de la BD del api REST, para no mostrar los nombre de atributo llaves.
     * y remplaza los guiones bajos por espacios en blancon. En caso que el atributo lo requiera.
     * @param string.
@@ -99,7 +99,7 @@ class Util {
     }
 
     /**
-    * @author Felipe Tun <ftun@palaceresorts.com>
+    * @author Felipe Tun <felipe.tun.cauich@gmail.com>
     * Funcion para obtener los errores del modelo de las peticiones POST y PUT, omitiendo los atributos por default de los modelos
     * @param array
     * @return string
@@ -141,7 +141,7 @@ class Util {
     }
 
     /**
-    * @author Felipe Tun <ftun@palaceresorts.com>
+    * @author Felipe Tun <felipe.tun.cauich@gmail.com>
     * Funcion para obtener el html para una alerta con las clases de boostrap
     * @param string. tipo de dialog ['success', 'info', 'warning', 'danger']
     * @param string. texto en el mensaje a mostrar. puede contener codigo html
@@ -164,6 +164,48 @@ class Util {
         }
 
         return  window.M.toast({html: typeMsn});
+    }
+
+    /**
+    * @author Felipe Tun <felipe.tun.cauich@gmail.com>
+    * Funcion para llenar el formulario
+    * @param obj data. informacion
+    * @param String idform. Formululario que va a llenar.
+    */
+    static setDataForm(data, idForm) {
+        var form = typeof idForm === 'string' ? document.getElementById(idForm) : idForm;
+        if (form.nodeName != 'FORM') {
+            return false;
+        }
+
+        for (var attr in data) {
+            if (data.hasOwnProperty(attr)) {
+                var obj = form.querySelector(`[name="${attr}"]`);
+                if (obj) {
+                    if (obj.type == 'checkbox') {
+                        obj.checked = data[attr] != 0;
+                    } else {
+                        obj.value = data[attr];
+                    }
+
+                    obj.classList.add('valid');
+                    if (obj.nextSibling) {
+                        obj.nextSibling.classList.add('active');
+                    }
+                }
+            }
+        }
+
+        return data;
+    }
+
+    /**
+    * @author Felipe Tun <felipe.tun.cauich@gmail.com>
+    * Funcion para generar un GUID de forma aleatoria
+    * @return string
+    */
+    static uniqueID() {
+        return '_' + Math.random().toString(36).substr(2, 9);
     }
 }
 

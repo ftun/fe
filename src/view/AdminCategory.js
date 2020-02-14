@@ -14,7 +14,9 @@ export default class AdminCategory extends React.Component {
             listCategorys : {},
         };
 
-        this.postCreate = this.postCreate.bind(this);
+        this.idForm = Util.uniqueID();
+        this.submitForm = this.submitForm.bind(this);
+        this.getCreate = this.getCreate.bind(this);
     }
 
     /**
@@ -32,9 +34,20 @@ export default class AdminCategory extends React.Component {
                     this.state.listCategorys[data.iddef_categoria]
                     ;
             }},
-            { attribute: 'descripcion', alias: 'Sub Categoria' },
+            { attribute: 'descripcion', alias: 'Sub Categoria', value : data => {
+                return data.iddef_categoria_padre == 0 ? '' : data.descripcion;
+            }},
             { attribute: 'estado', alias: 'Estado', value : data => data.estado == 1 ? 'Active' : 'Inactive' },
+            { alias : 'Edit', value : (data, index) => {
+                return <a className="modal-trigger" href="#modal1" data-index={index} onClick={e => this.getEdit(data)}><i className="material-icons left">edit</i></a>
+            }}
         ];
+    }
+
+    getEdit(data) {
+        this.url = 'put/' + data.iddef_categoria;
+        Util.setDataForm(data, document.getElementById(this.idForm));
+        return window.M.FormSelect.init(document.querySelectorAll('select'));
     }
 
     /**
@@ -82,22 +95,36 @@ export default class AdminCategory extends React.Component {
             this.getDataCategory()});
     }
 
-    postCreate(e) {
+    /**
+    * Se envian los datos del formulario al API
+    * @param Object <element>
+    * @return mixed
+    */
+    submitForm(e) {
         e.preventDefault();
         let data = Util.getDataElementsForm(e.target, false);
 
         MakeRequest({
-            method: 'post',
-            url: 'categoria/post',
+            method: this.url == 'post' ? this.url : 'put',
+            url: 'categoria/' + this.url,
             data : data
         }).then(response => {
+            if (response === null) return Util.getMsnDialog('success', 'Updated');
             if (response.error) {
                 return Util.getMsnDialog('danger', Util.getModelErrorMessages(response.message));
             }
 
             this.getListCatalogs();
-            return  Util.getMsnDialog('success', 'Ok!');
+            return  Util.getMsnDialog('success', 'Created');
         });
+    }
+
+    /**
+    * Reset parametros para la creacion de la vista
+    */
+    getCreate() {
+        document.getElementById(this.idForm).reset();
+        this.url = 'post';
     }
 
     render() {
@@ -105,7 +132,7 @@ export default class AdminCategory extends React.Component {
 
         return <div className="row">
             <div className="col s12 m12 right-align">
-                <a className="waves-effect waves-light btn modal-trigger" href="#modal1"><i className="material-icons left">add</i>Category</a>
+                <a className="waves-effect waves-light btn modal-trigger" href="#modal1" onClick={this.getCreate}><i className="material-icons left">add</i>Category</a>
             </div>
             <div className="col s12 m12">
                 <GridView columns={this.getConfigColums()} data={this.state.data} />
@@ -114,7 +141,7 @@ export default class AdminCategory extends React.Component {
                 <div className="modal-content">
                     <h4>Category</h4>
                         <div className="row">
-                            <form className="col s12" onSubmit={this.postCreate}>
+                            <form id={this.idForm} className="col s12" onSubmit={this.submitForm}>
                                 <div className="row">
                                     <div className="input-field col s12 m6">
                                         <select id="iddef_unidad_negocio" name="iddef_unidad_negocio">
@@ -128,6 +155,7 @@ export default class AdminCategory extends React.Component {
                                     <div className="input-field col s12 m6">
                                         <select id="iddef_categoria_padre" name="iddef_categoria_padre">
                                             <option value="" >Select...</option>
+                                            <option value="0" >N/A</option>
                                             {Object.keys(listCategorys).map(row => {
                                                 return <option key={row} value={row}>{listCategorys[row]}</option>;
                                             })}
@@ -136,7 +164,7 @@ export default class AdminCategory extends React.Component {
                                     </div>
                                     <div className="input-field col s12 m6">
                                         <input id="descripcion" name="descripcion" type="text" className="validate" />
-                                        <label htmlFor="descripcion">First Name</label>
+                                        <label htmlFor="descripcion">Description</label>
                                     </div>
                                     <div className="input-field col s12 m6">
                                         <div className="switch">
