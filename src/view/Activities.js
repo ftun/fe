@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import GridView from '../components/GridView';
 import Card from '../components/Card';
 
@@ -62,7 +63,10 @@ export default class Activities extends React.Component {
                                     On
                                 </label>
                         </div>
-                    }}
+                    }},
+                    { alias: 'Detalles', value : data => {
+                        return <Link to={'/activityDetail/' + data.iddef_actividad}><i className="material-icons left">visibility</i></Link>;
+                    }},
                 ]}
             />;
     }
