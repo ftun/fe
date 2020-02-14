@@ -40,10 +40,32 @@ export default class AdminCategory extends React.Component {
             { attribute: 'estado', alias: 'Estado', value : data => data.estado == 1 ? 'Active' : 'Inactive' },
             { alias : 'Edit', value : (data, index) => {
                 return <a className="modal-trigger" href="#modal1" data-index={index} onClick={e => this.getEdit(data)}><i className="material-icons left">edit</i></a>
-            }}
+            }},
+            { alias: "Activities", icon : 'local_activity', expand : this.getExpandActivities},
         ];
     }
 
+    /**
+    * Contenido del expand de la columna
+    * @param array
+    * @return object <element>
+    */
+    getExpandActivities(data) {
+        return <div className="row">
+            <div className="col s12 m12">
+                <h5 className="center-align">Actividades</h5>
+            </div>
+            <div className="col s12 m12">
+
+            </div>
+        </div>;
+    }
+
+    /**
+    * Edicion de un resgitros del grid
+    * @param array
+    * @return mixed
+    */
     getEdit(data) {
         this.url = 'put/' + data.iddef_categoria;
         Util.setDataForm(data, document.getElementById(this.idForm));

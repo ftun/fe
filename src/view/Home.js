@@ -20,6 +20,7 @@ class Home extends React.Component {
             method: 'get',
             url: '/unidadNegocio/search',
         }).then(response => {
+            if (response.error) return null;
             this.setState({
                 unidades : response.data
             }, () => window.M.Tabs.init(document.querySelectorAll('.tabs')));
@@ -35,6 +36,7 @@ class Home extends React.Component {
             method: 'get',
             url: '/categoria/porUnidad/' + data.iddef_unidad_negocio,
         }).then(response => {
+            if (response.error) return null;
             var content = [];
             Object.keys(response.data).map(key => {
                 let row = response.data[key],
