@@ -31,7 +31,7 @@ class Admin extends React.Component {
         </div>,
         <div className="row">
             {crudAdmin.map((row, index) => {
-                return <div key={index} className="col s12 m4 center" >
+                return <div key={index + row.name} className="col s12 m4 center" >
                     <div className="row">
                         <div className="col s12 m12">
                             <div className="card-panel">
@@ -41,7 +41,7 @@ class Admin extends React.Component {
                                 </span>
                           </div>
                         </div>
-                      </div>
+                    </div>
                 </div>
             })}
         </div>

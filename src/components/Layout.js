@@ -6,8 +6,6 @@ import Login from './Login';
 class Layout extends React.Component {
     constructor(props) {
         super(props);
-
-        console.log( window.sessionStorage.isAuthenticated ? true : false);
         this.state = {
             isAuthenticated : window.sessionStorage.isAuthenticated ? true : false,
         };
@@ -37,7 +35,7 @@ class Layout extends React.Component {
 
     render() {
         const { isAuthenticated } = this.state;
-        console.log('render', isAuthenticated);
+
         return <Fragment>
             <ServiceProvider value={{
                 userHasAuthenticated : this.userHasAuthenticated,
