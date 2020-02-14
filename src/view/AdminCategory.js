@@ -1,10 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import GridView from '../components/GridView';
+import Activities from './Activities';
 
 const MakeRequest = require('../helpers/MakeRequest');
 const Util = require('../helpers/Util');
 
+/**
+* @author Felipe Tun <felipe.tun.cauich@gmail.com>
+*/
 export default class AdminCategory extends React.Component {
     constructor(props) {
         super(props);
@@ -14,9 +18,19 @@ export default class AdminCategory extends React.Component {
             listCategorys : {},
         };
 
+        this.idModal = Util.uniqueID();
         this.idForm = Util.uniqueID();
         this.submitForm = this.submitForm.bind(this);
         this.getCreate = this.getCreate.bind(this);
+    }
+
+    /**
+    * Se obtienen los datos del API al montar el componente
+    * @return mixed
+    */
+    componentDidMount() {
+        this.getListCatalogs();
+        window.M.Modal.init(document.getElementById(this.idModal));
     }
 
     /**
@@ -39,7 +53,7 @@ export default class AdminCategory extends React.Component {
             }},
             { attribute: 'estado', alias: 'Estado', value : data => data.estado == 1 ? 'Active' : 'Inactive' },
             { alias : 'Edit', value : (data, index) => {
-                return <a className="modal-trigger" href="#modal1" data-index={index} onClick={e => this.getEdit(data)}><i className="material-icons left">edit</i></a>
+                return <a className="modal-trigger" href={'#' + this.idModal} data-index={index} onClick={e => this.getEdit(data)}><i className="material-icons left">edit</i></a>
             }},
             { alias: "Activities", icon : 'local_activity', expand : this.getExpandActivities},
         ];
@@ -51,14 +65,12 @@ export default class AdminCategory extends React.Component {
     * @return object <element>
     */
     getExpandActivities(data) {
-        return <div className="row">
-            <div className="col s12 m12">
-                <h5 className="center-align">Actividades</h5>
-            </div>
-            <div className="col s12 m12">
+        if (data.estado == 0) {
+            Util.getMsnDialog('warning', 'Inacive Record');
+            return null;
+        }
 
-            </div>
-        </div>;
+        return <Activities category={data}/>;
     }
 
     /**
@@ -70,15 +82,6 @@ export default class AdminCategory extends React.Component {
         this.url = 'put/' + data.iddef_categoria;
         Util.setDataForm(data, document.getElementById(this.idForm));
         return window.M.FormSelect.init(document.querySelectorAll('select'));
-    }
-
-    /**
-    * Se obtienen los datos del API al montar el componente
-    * @return mixed
-    */
-    componentDidMount() {
-        this.getListCatalogs();
-        window.M.Modal.init(document.querySelectorAll('.modal'));
     }
 
     /**
@@ -131,7 +134,11 @@ export default class AdminCategory extends React.Component {
             url: 'categoria/' + this.url,
             data : data
         }).then(response => {
-            if (response === null) return Util.getMsnDialog('success', 'Updated');
+            if (response === null) {
+                this.getListCatalogs();
+                return Util.getMsnDialog('success', 'Updated');
+            }
+
             if (response.error) {
                 return Util.getMsnDialog('danger', Util.getModelErrorMessages(response.message));
             }
@@ -154,60 +161,60 @@ export default class AdminCategory extends React.Component {
 
         return <div className="row">
             <div className="col s12 m12 right-align">
-                <a className="waves-effect waves-light btn modal-trigger" href="#modal1" onClick={this.getCreate}><i className="material-icons left">add</i>Category</a>
+                <a className="waves-effect waves-light btn modal-trigger" href={'#' + this.idModal} onClick={this.getCreate}><i className="material-icons left">add</i>Category</a>
             </div>
             <div className="col s12 m12">
                 <GridView columns={this.getConfigColums()} data={this.state.data} />
             </div>
-            <div id="modal1" className="modal">
+            <div id={this.idModal} className="modal">
                 <div className="modal-content">
                     <h4>Category</h4>
-                        <div className="row">
-                            <form id={this.idForm} className="col s12" onSubmit={this.submitForm}>
-                                <div className="row">
-                                    <div className="input-field col s12 m6">
-                                        <select id="iddef_unidad_negocio" name="iddef_unidad_negocio">
-                                            <option value="" >Select...</option>
-                                            {Object.keys(listUnit).map(row => {
-                                                return <option key={row} value={row}>{listUnit[row]}</option>;
-                                            })}
-                                        </select>
-                                        <label htmlFor="iddef_unidad_negocio">Unit</label>
-                                    </div>
-                                    <div className="input-field col s12 m6">
-                                        <select id="iddef_categoria_padre" name="iddef_categoria_padre">
-                                            <option value="" >Select...</option>
-                                            <option value="0" >N/A</option>
-                                            {Object.keys(listCategorys).map(row => {
-                                                return <option key={row} value={row}>{listCategorys[row]}</option>;
-                                            })}
-                                        </select>
-                                        <label htmlFor="iddef_categoria_padre">Category</label>
-                                    </div>
-                                    <div className="input-field col s12 m6">
-                                        <input id="descripcion" name="descripcion" type="text" className="validate" />
-                                        <label htmlFor="descripcion">Description</label>
-                                    </div>
-                                    <div className="input-field col s12 m6">
-                                        <div className="switch">
-                                        <label>
-                                          Off
-                                          <input type="checkbox" id="estado" name="estado"/>
-                                          <span className="lever"></span>
-                                          On
-                                        </label>
-                                      </div>
-                                    </div>
+                    <div className="row">
+                        <form id={this.idForm} className="col s12" onSubmit={this.submitForm}>
+                            <div className="row">
+                                <div className="input-field col s12 m6">
+                                    <select id="iddef_unidad_negocio" name="iddef_unidad_negocio">
+                                        <option value="" >Select...</option>
+                                        {Object.keys(listUnit).map(row => {
+                                            return <option key={row} value={row}>{listUnit[row]}</option>;
+                                        })}
+                                    </select>
+                                    <label htmlFor="iddef_unidad_negocio">Unit</label>
                                 </div>
-                                <div className="row">
-                                    <div className="col s12 m12 right-align">
-                                        <button className="btn waves-effect waves-light" type="submit">Submit
-                                            <i className="material-icons right">send</i>
-                                        </button>
-                                    </div>
+                                <div className="input-field col s12 m6">
+                                    <select id="iddef_categoria_padre" name="iddef_categoria_padre">
+                                        <option value="" >Select...</option>
+                                        <option value="0" >N/A</option>
+                                        {Object.keys(listCategorys).map(row => {
+                                            return <option key={row} value={row}>{listCategorys[row]}</option>;
+                                        })}
+                                    </select>
+                                    <label htmlFor="iddef_categoria_padre">Category</label>
                                 </div>
-                            </form>
-                      </div>
+                                <div className="input-field col s12 m6">
+                                    <input id="descripcion" name="descripcion" type="text" className="validate" />
+                                    <label htmlFor="descripcion">Description</label>
+                                </div>
+                                <div className="input-field col s12 m6">
+                                    <div className="switch">
+                                    <label>
+                                      Off
+                                      <input type="checkbox" id="estado" name="estado" defaultChecked={true}/>
+                                      <span className="lever"></span>
+                                      On
+                                    </label>
+                                  </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col s12 m12 right-align">
+                                    <button className="btn waves-effect waves-light" type="submit">Submit
+                                        <i className="material-icons right">send</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                  </div>
                 </div>
             </div>
         </div>;
