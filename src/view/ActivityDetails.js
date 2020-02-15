@@ -12,6 +12,7 @@ export default class ActivityDetails extends React.Component {
             data : {},
             restrictions : [],
             schedule : [],
+            services : [],
         };
 
         this.id = this.props.id || this.props.match.params.id;
@@ -53,9 +54,11 @@ export default class ActivityDetails extends React.Component {
     async getRestrictionsAndSchedule() {
         let restrictions = await MakeRequest({ method: 'get', url: 'restriccion/byActivity/' + this.id });
         let schedule = await MakeRequest({ method: 'get', url: 'horario/byActivity/' + this.id });
+        let services = await MakeRequest({ method: 'get', url: 'servicio/byActivity/' + this.id });
         this.setState({
             restrictions : restrictions.error ? [] : restrictions.data,
             schedule : schedule.error ? [] : schedule.data,
+            services : services.error ? [] : services.data,
         });
     }
 
@@ -97,6 +100,7 @@ export default class ActivityDetails extends React.Component {
         this.methodApi = 'post';
         if (tipo == 'schedule')  this.urlApi = 'horario/post';
         if (tipo == 'restrictions')  this.urlApi = 'restriccion/post';
+        if (tipo == 'services')  this.urlApi = 'servicio/post';
 
         document.getElementById(this.idForm).reset();
         window.M.updateTextFields();
@@ -110,13 +114,14 @@ export default class ActivityDetails extends React.Component {
         this.methodApi = 'put';
         if (tipo == 'schedule')  this.urlApi = 'horario/put/' + id;
         if (tipo == 'restrictions')  this.urlApi = 'restriccion/put/' + id;
+        if (tipo == 'services')  this.urlApi = 'servicio/put/' + id;
 
         Util.setDataForm(data, document.getElementById(this.idForm));
         window.M.updateTextFields();
     }
 
     render() {
-        const { data, restrictions, schedule } = this.state,
+        const { data, restrictions, services, schedule } = this.state,
             exist = Object.keys(data).length
         ;
 
@@ -125,7 +130,7 @@ export default class ActivityDetails extends React.Component {
                 <Link to={'/category'} className="waves-effect waves-light btn"><i className="material-icons left">arrow_back</i></Link>
                 <h4>Actividad: {exist ? data.descripcion : 'No Encontrada'}</h4>
             </div>
-            <div className="col s12 m6">
+            <div className="col s12 m4">
                 <ul className="collection with-header">
                     <li className="collection-header">
                         <b>Horarios</b>
@@ -140,7 +145,7 @@ export default class ActivityDetails extends React.Component {
                     })}
                 </ul>
             </div>
-            <div className="col s12 m6">
+            <div className="col s12 m4">
                 <ul className="collection with-header">
                     <li className="collection-header">
                         <b>Restricciones</b>
@@ -150,6 +155,21 @@ export default class ActivityDetails extends React.Component {
                         return <li key={i} className="collection-item">
                                     <div>{row.descripcion + ' - ' + (row.estado == 1 ? 'Activo' : 'Inactivo')}
                                         <a className={"secondary-content modal-trigger " + this.visible} href={'#' + this.idModal} onClick={e => this.editItem(row.iddef_restriccion, row, 'restrictions')}><i className="material-icons">edit</i></a>
+                                    </div>
+                                </li>;
+                    })}
+                </ul>
+            </div>
+            <div className="col s12 m4">
+                <ul className="collection with-header">
+                    <li className="collection-header">
+                        <b>Services</b>
+                        <a className={"modal-trigger " + this.visible} href={'#' + this.idModal} onClick={e => this.createItem('services')}><i className="material-icons left">add</i></a>
+                    </li>
+                    {services.map((row, i) => {
+                        return <li key={i} className="collection-item">
+                                    <div>{row.descripcion + ' - ' + (row.estado == 1 ? 'Activo' : 'Inactivo')}
+                                        <a className={"secondary-content modal-trigger " + this.visible} href={'#' + this.idModal} onClick={e => this.editItem(row.iddef_servicio, row, 'services')}><i className="material-icons">edit</i></a>
                                     </div>
                                 </li>;
                     })}
