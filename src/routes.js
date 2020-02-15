@@ -6,6 +6,7 @@ import Home from './view/Home';
 import Admin from './view/Admin';
 import AdminCategory from './view/AdminCategory';
 import ActivityDetails from './view/ActivityDetails';
+import InfoActivities from './view/InfoActivities';
 
 const AppRoutes = (props) =>
     <Switch>
@@ -14,6 +15,7 @@ const AppRoutes = (props) =>
         <Route exact path="/admin" component={Admin} />
         <Route exact path="/category" component={AdminCategory} />
         <Route exact path="/activityDetail/:id([0-9]+)" component={ActivityDetails} />
+        <Route exact path="/activitiesInfo/:id([0-9]+)" component={InfoActivities} />
 
         <Route component={NotFound} />
     </Switch>

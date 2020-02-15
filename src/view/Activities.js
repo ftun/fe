@@ -100,6 +100,7 @@ export default class Activities extends React.Component {
     */
     submitForm(e) {
         e.preventDefault();
+        window.M.updateTextFields();
         let data = Util.getDataElementsForm(e.target, false);
 
         MakeRequest({

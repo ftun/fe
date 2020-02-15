@@ -14,7 +14,8 @@ export default class ActivityDetails extends React.Component {
             schedule : [],
         };
 
-        this.id = this.props.match.params.id;
+        this.id = this.props.id || this.props.match.params.id;
+        this.visible = this.props.visible == undefined ? '' : 'hide';
         this.urlApi = '';
         this.methodApi = '';
         this.idModal = Util.uniqueID();
@@ -120,7 +121,7 @@ export default class ActivityDetails extends React.Component {
         ;
 
         return <div className="row">
-            <div className="col s12 m12">
+            <div className={'col s12 m12 ' + this.visible}>
                 <Link to={'/category'} className="waves-effect waves-light btn"><i className="material-icons left">arrow_back</i></Link>
                 <h4>Actividad: {exist ? data.descripcion : 'No Encontrada'}</h4>
             </div>
@@ -128,12 +129,12 @@ export default class ActivityDetails extends React.Component {
                 <ul className="collection with-header">
                     <li className="collection-header">
                         <b>Horarios</b>
-                        <a className="modal-trigger" href={'#' + this.idModal} onClick={e => this.createItem('schedule')}><i className="material-icons left">add</i></a>
+                        <a className={"modal-trigger " + this.visible} href={'#' + this.idModal} onClick={e => this.createItem('schedule')}><i className="material-icons left">add</i></a>
                     </li>
                     {schedule.map((row, i) => {
                         return <li key={i} className="collection-item">
                                     <div>{row.descripcion + ' - ' + (row.estado == 1 ? 'Activo' : 'Inactivo')}
-                                    <a className="secondary-content modal-trigger" href={'#' + this.idModal} onClick={e => this.editItem(row.iddef_horario, row, 'schedule')}><i className="material-icons">edit</i></a>
+                                    <a className={"secondary-content modal-trigger " + this.visible} href={'#' + this.idModal} onClick={e => this.editItem(row.iddef_horario, row, 'schedule')}><i className="material-icons">edit</i></a>
                                 </div>
                             </li>;
                     })}
@@ -143,12 +144,12 @@ export default class ActivityDetails extends React.Component {
                 <ul className="collection with-header">
                     <li className="collection-header">
                         <b>Restricciones</b>
-                        <a className="modal-trigger" href={'#' + this.idModal} onClick={e => this.createItem('restrictions')}><i className="material-icons left">add</i></a>
+                        <a className={"modal-trigger " + this.visible} href={'#' + this.idModal} onClick={e => this.createItem('restrictions')}><i className="material-icons left">add</i></a>
                     </li>
                     {restrictions.map((row, i) => {
                         return <li key={i} className="collection-item">
                                     <div>{row.descripcion + ' - ' + (row.estado == 1 ? 'Activo' : 'Inactivo')}
-                                        <a className="secondary-content modal-trigger" href={'#' + this.idModal} onClick={e => this.editItem(row.iddef_restriccion, row, 'restrictions')}><i className="material-icons">edit</i></a>
+                                        <a className={"secondary-content modal-trigger " + this.visible} href={'#' + this.idModal} onClick={e => this.editItem(row.iddef_restriccion, row, 'restrictions')}><i className="material-icons">edit</i></a>
                                     </div>
                                 </li>;
                     })}

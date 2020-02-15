@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 
 const MakeRequest = require('../helpers/MakeRequest');
 
@@ -46,8 +47,9 @@ class Home extends React.Component {
 
                 if (children) {
                     childrenContent = <ul className="collection">
-                        {row.hijos.map((c, i) => {
-                            return <li key={i} className="collection-item"><div>{c}<a className="secondary-content"><i className="material-icons">send</i></a></div></li>
+                        {Object.keys(row.hijos).map((c, i) => {
+                            let r = row.hijos[c];
+                            return <li key={i} className="collection-item"><div>{r.descripcion}<Link to={'/activitiesInfo/' + r.iddef_categoria} className="secondary-content"><i className="material-icons">send</i></Link></div></li>
                         })}
                     </ul>;
                 }
