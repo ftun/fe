@@ -116,15 +116,11 @@ export default class Activities extends React.Component {
         });
     }
 
-    getCreate() {
-
-    }
-
     render() {
         return <Card>
             <div className="row">
                 <div className="col s12 m6">
-                    <a className="modal-trigger" href={'#' + this.idModal} onClick={this.getCreate}><i className="material-icons left">add</i></a>
+                    <a className="modal-trigger" href={'#' + this.idModal}><i className="material-icons left">add</i></a>
                     <b>Actividades</b>
                 </div>
                 <div className="col s12 m12">
