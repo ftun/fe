@@ -18,11 +18,11 @@ class Home extends React.Component {
     componentDidMount() {
         MakeRequest({
             method: 'get',
-            url: '/unidadNegocio/search',
+            url: 'unidadNegocio/search',
         }).then(response => {
             if (response.error) return null;
             this.setState({
-                unidades : response.data
+                unidades : response.error ? [] : response.data,
             }, () => window.M.Tabs.init(document.querySelectorAll('.tabs')));
         });
     }
@@ -34,7 +34,7 @@ class Home extends React.Component {
     getContent(data) {
         MakeRequest({
             method: 'get',
-            url: '/categoria/porUnidad/' + data.iddef_unidad_negocio,
+            url: 'categoria/porUnidad/' + data.iddef_unidad_negocio,
         }).then(response => {
             if (response.error) return null;
             var content = [];
